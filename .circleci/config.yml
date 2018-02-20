@@ -1,0 +1,54 @@
+version: 2
+jobs:
+  test:
+    working_directory: ~/repo
+    docker:
+      - image: naughtldy/circleci-node-awscli
+
+    steps:
+      - checkout
+      - run:
+          name: npm package install
+          command: npm i
+      - run:
+          name: test
+          command: npm run test
+
+  deploy:
+    working_directory: ~/repo
+    docker:
+      - image: naughtldy/circleci-node-awscli
+
+    steps:
+      - checkout
+      - run:
+          name: npm package install
+          command: npm i
+      - run:
+          name: make template
+          command: |
+            aws cloudformation package \
+            --template-file src/cfn.template.yml \
+            --s3-bucket naughtldy-artifact \
+            --s3-prefix template/all-infra \
+            --output-template-file .cfn/packaged.yml
+      - run:
+          name: cloudformation update stack
+          command: |
+            aws cloudformation update-stack \
+            --stack-name all-infra \
+            --template-body file://.cfn/packaged.yml \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --region ap-northeast-1
+
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - test
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master

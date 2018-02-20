@@ -33,7 +33,15 @@ Resources:
         Version: "2012-10-17"
         Statement:
           - Effect: Allow
-            Action: "*"
+            Action:
+              - "s3:*"
+            Resource:
+              - !Sub "arn:aws:s3:::${Owner}-artifact/template/all-infra"
+              - !Sub "arn:aws:s3:::${Owner}-artifact/template/all-infra/*"
+          - Effect: Allow
+            Action:
+              - "cloudformation:*"
+              - "iam:*"
             Resource: "*"
       Users:
         - !Ref AwsAllInfraUser

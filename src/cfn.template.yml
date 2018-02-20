@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation CI/CD Pipeline
+
+Parameters:
+  Owner:
+    Type: String
+    Default: naughtldy
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Github Configuration
+        Parameters:
+          - Owner
+    ParameterLabels:
+      Owner:
+        default: Owner
+
+Resources:
+  IAM:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: iam.template.yml
+      Parameters:
+        Owner: !Ref Owner

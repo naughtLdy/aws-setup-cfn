@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: IAM CI/CD Pipeline
+
+Parameters:
+  Owner:
+    Type: String
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Github Configuration
+        Parameters:
+          - Owner
+    ParameterLabels:
+      Owner:
+        default: Owner
+
+Resources:
+  # CircleCI用ユーザー
+  AwsAllInfraUser:
+    Type: AWS::IAM::User
+    DeletionPolicy: Retain
+    Properties:
+      UserName: AwsAllInfra
+      Path: '/'
+
+  CircleCIDeployPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: CircleCiCloudformation
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "*"
+            Resource: "*"
+      Users:
+        - !Ref AwsAllInfraUser

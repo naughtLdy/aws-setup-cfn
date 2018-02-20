@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "cfn-lint validate setup/cfn.template.yml"
+    "test": "npm-run-all test:*",
+    "test:cfn": "cfn-lint validate src/cfn.template.yml",
+    "test:iam": "cfn-lint validate src/iam.template.yml"
   },
   "repository": "https://github.com/naughtLdy/aws-setup-cfn.git",
   "author": "naughtLdy",
   "license": "MIT",
   "devDependencies": {
-    "cfn-lint": "^1.5.0"
+    "cfn-lint": "^1.5.0",
+    "npm-run-all": "^4.1.2"
   }
 }

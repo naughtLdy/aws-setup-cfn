@@ -2,7 +2,13 @@
   "name": "aws-setup-cfn",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "test": "cfn-lint validate setup/cfn.template.yml"
+  },
   "repository": "https://github.com/naughtLdy/aws-setup-cfn.git",
   "author": "naughtLdy",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "cfn-lint": "^1.5.0"
+  }
 }

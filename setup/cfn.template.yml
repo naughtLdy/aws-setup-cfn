@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation CI/CD Pipeline
+
+Parameters:
+  Owner:
+    Type: String
+    Default: naughtldy
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Github Configuration
+        Parameters:
+          - Owner
+    ParameterLabels:
+      Owner:
+        default: Owner
+
+Resources:
+  # Admin User
+  Admin:
+    Type: AWS::IAM::User
+    DeletionPolicy: Retain
+    Properties:
+      UserName: !Ref Owner
+      Path: '/'
+
+  AdminPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: Admin
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "*"
+            Resource: "*"
+      Users:
+        - !Ref Admin
+
+  # 全サービス用ソースコード保存バケット
+  ArtifactStoreBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Sub ${Owner}-artifact
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
